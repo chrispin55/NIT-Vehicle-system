@@ -839,10 +839,10 @@ class ModernITVMS {
                             <p class="mb-0"><strong>Fuel:</strong> ${vehicle.fuel_type}</p>
                         </div>
                         <div class="mt-3">
-                            <button class="btn btn-sm btn-nit-outline me-2" onclick="app.editVehicle(${vehicle.id})">
+                            <button class="btn btn-sm btn-nit-outline me-2" onclick="try { if(window.app) window.app.editVehicle(${vehicle.id}); } catch(e) { console.error('Edit error:', e); }">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="app.deleteVehicle(${vehicle.id})">
+                            <button class="btn btn-sm btn-outline-danger" onclick="try { if(window.app) window.app.deleteVehicle(${vehicle.id}); } catch(e) { console.error('Delete error:', e); }">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
@@ -886,10 +886,10 @@ class ModernITVMS {
                             <p class="mb-0"><strong>Email:</strong> ${driver.email || 'N/A'}</p>
                         </div>
                         <div class="mt-3">
-                            <button class="btn btn-sm btn-nit-outline me-2" onclick="app.editDriver(${driver.id})">
+                            <button class="btn btn-sm btn-nit-outline me-2" onclick="try { if(window.app) window.app.editDriver(${driver.id}); } catch(e) { console.error('Edit error:', e); }">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="app.deleteDriver(${driver.id})">
+                            <button class="btn btn-sm btn-outline-danger" onclick="try { if(window.app) window.app.deleteDriver(${driver.id}); } catch(e) { console.error('Delete error:', e); }">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
@@ -942,10 +942,10 @@ class ModernITVMS {
                                     ${trip.status}
                                 </span>
                                 <div class="mt-2">
-                                    <button class="btn btn-sm btn-nit-outline me-2" onclick="app.editTrip(${trip.id})">
+                                    <button class="btn btn-sm btn-nit-outline me-2" onclick="try { if(window.app) window.app.editTrip(${trip.id}); } catch(e) { console.error('Edit error:', e); }">
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" onclick="app.deleteTrip(${trip.id})">
+                                    <button class="btn btn-sm btn-outline-danger" onclick="try { if(window.app) window.app.deleteTrip(${trip.id}); } catch(e) { console.error('Delete error:', e); }">
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
                                 </div>
@@ -988,10 +988,10 @@ class ModernITVMS {
                             <p class="mb-0"><strong>Performed by:</strong> ${record.performed_by || 'N/A'}</p>
                         </div>
                         <div class="mt-3">
-                            <button class="btn btn-sm btn-nit-outline me-2" onclick="app.editMaintenance(${record.id})">
+                            <button class="btn btn-sm btn-nit-outline me-2" onclick="try { if(window.app) window.app.editMaintenance(${record.id}); } catch(e) { console.error('Edit error:', e); }">
                                 <i class="fas fa-edit"></i> Edit
                             </button>
-                            <button class="btn btn-sm btn-outline-danger" onclick="app.deleteMaintenance(${record.id})">
+                            <button class="btn btn-sm btn-outline-danger" onclick="try { if(window.app) window.app.deleteMaintenance(${record.id}); } catch(e) { console.error('Delete error:', e); }">
                                 <i class="fas fa-trash"></i> Delete
                             </button>
                         </div>
@@ -1102,10 +1102,38 @@ class ModernITVMS {
         }
     }
 
-    // CRUD operations (placeholders for now)
+    // CRUD operations
     async editVehicle(id) {
-        this.showInfo(`Edit vehicle functionality for ID: ${id}`);
-        // TODO: Implement edit vehicle modal/form
+        try {
+            // Fetch vehicle data
+            const vehicle = await this.apiRequest(`/vehicles/${id}`);
+            
+            // Populate form with vehicle data
+            const form = document.getElementById('vehicleForm');
+            if (form) {
+                // Fill form fields
+                Object.keys(vehicle).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        input.value = vehicle[key] || '';
+                    }
+                });
+                
+                // Show form modal or scroll to form
+                form.scrollIntoView({ behavior: 'smooth' });
+                
+                // Change submit button text
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Update Vehicle';
+                }
+                
+                this.showInfo('Edit the vehicle details and click Update to save changes');
+            }
+        } catch (error) {
+            console.error('Failed to load vehicle for editing:', error);
+            this.showError('Failed to load vehicle data. Please try again.');
+        }
     }
 
     async deleteVehicle(id) {
@@ -1121,8 +1149,36 @@ class ModernITVMS {
     }
 
     async editDriver(id) {
-        this.showInfo(`Edit driver functionality for ID: ${id}`);
-        // TODO: Implement edit driver modal/form
+        try {
+            // Fetch driver data
+            const driver = await this.apiRequest(`/drivers/${id}`);
+            
+            // Populate form with driver data
+            const form = document.getElementById('driverForm');
+            if (form) {
+                // Fill form fields
+                Object.keys(driver).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        input.value = driver[key] || '';
+                    }
+                });
+                
+                // Show form modal or scroll to form
+                form.scrollIntoView({ behavior: 'smooth' });
+                
+                // Change submit button text
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Update Driver';
+                }
+                
+                this.showInfo('Edit the driver details and click Update to save changes');
+            }
+        } catch (error) {
+            console.error('Failed to load driver for editing:', error);
+            this.showError('Failed to load driver data. Please try again.');
+        }
     }
 
     async deleteDriver(id) {
@@ -1138,8 +1194,36 @@ class ModernITVMS {
     }
 
     async editTrip(id) {
-        this.showInfo(`Edit trip functionality for ID: ${id}`);
-        // TODO: Implement edit trip modal/form
+        try {
+            // Fetch trip data
+            const trip = await this.apiRequest(`/trips/${id}`);
+            
+            // Populate form with trip data
+            const form = document.getElementById('tripForm');
+            if (form) {
+                // Fill form fields
+                Object.keys(trip).forEach(key => {
+                    const input = form.querySelector(`[name="${key}"]`);
+                    if (input) {
+                        input.value = trip[key] || '';
+                    }
+                });
+                
+                // Show form modal or scroll to form
+                form.scrollIntoView({ behavior: 'smooth' });
+                
+                // Change submit button text
+                const submitBtn = form.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.textContent = 'Update Trip';
+                }
+                
+                this.showInfo('Edit the trip details and click Update to save changes');
+            }
+        } catch (error) {
+            console.error('Failed to load trip for editing:', error);
+            this.showError('Failed to load trip data. Please try again.');
+        }
     }
 
     async deleteTrip(id) {
