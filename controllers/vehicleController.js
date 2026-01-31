@@ -1,10 +1,13 @@
-const { pool } = require('../database/config');
+const { getPool } = require('../database/config');
 
 // Get all vehicles
 const getAllVehicles = async (req, res) => {
   try {
     const { status, type, page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
+    
+    // Get database pool
+    const pool = await getPool();
     
     let query = `
       SELECT v.*, 

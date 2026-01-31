@@ -15,7 +15,10 @@ const RAILWAY_DB_CONFIG = {
   charset: 'utf8mb4',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0
+  queueLimit: 0,
+  acquireTimeout: 60000,
+  timeout: 60000,
+  reconnect: true
 };
 
 // Fallback configuration for local development

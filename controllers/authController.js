@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const { pool } = require('../database/config');
+const { getPool } = require('../database/config');
 
 // User login
 const login = async (req, res) => {
@@ -13,6 +13,9 @@ const login = async (req, res) => {
         message: 'Username and password are required'
       });
     }
+    
+    // Get database pool
+    const pool = await getPool();
     
     // Find user by username
     const [users] = await pool.execute(
@@ -81,6 +84,9 @@ const getProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     
+    // Get database pool
+    const pool = await getPool();
+    
     const [users] = await pool.execute(`
       SELECT id, username, email, full_name, role, is_active, created_at, updated_at
       FROM users 
@@ -109,6 +115,9 @@ const updateProfile = async (req, res) => {
   try {
     const userId = req.user.id;
     const { email, full_name } = req.body;
+    
+    // Get database pool
+    const pool = await getPool();
     
     // Check if user exists
     const [existing] = await pool.execute(
@@ -199,6 +208,9 @@ const changePassword = async (req, res) => {
       });
     }
     
+    // Get database pool
+    const pool = await getPool();
+    
     // Get current user
     const [users] = await pool.execute(
       'SELECT password FROM users WHERE id = ?',
@@ -247,6 +259,9 @@ const changePassword = async (req, res) => {
 const refreshToken = async (req, res) => {
   try {
     const userId = req.user.id;
+    
+    // Get database pool
+    const pool = await getPool();
     
     // Get user details
     const [users] = await pool.execute(
