@@ -5,6 +5,7 @@
   "main": "backend/src/server.js",
   "scripts": {
     "start": "node backend/src/server.js",
+    "start:railway": "node railway-start.js",
     "dev": "nodemon backend/src/server.js",
     "build": "echo 'Frontend build process would go here'",
     "test": "jest",

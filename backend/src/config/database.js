@@ -3,12 +3,21 @@ require('dotenv').config();
 
 // Database configuration for Railway.app and local development
 const getDatabaseConfig = () => {
+  // Debug: Log all environment variables
+  console.log('🔍 Environment Variables Debug:');
+  console.log('RAILWAY_DB_URL:', process.env.RAILWAY_DB_URL ? 'SET' : 'NOT SET');
+  console.log('DB_HOST:', process.env.DB_HOST);
+  console.log('DB_PORT:', process.env.DB_PORT);
+  console.log('DB_NAME:', process.env.DB_NAME);
+  console.log('DB_USER:', process.env.DB_USER);
+  console.log('NODE_ENV:', process.env.NODE_ENV);
+  
   // Always use Railway.app configuration when RAILWAY_DB_URL is available
-  if (process.env.RAILWAY_DB_URL) {
+  if (process.env.RAILWAY_DB_URL && process.env.RAILWAY_DB_URL !== 'mysql://user:password@host:port/database') {
     console.log('🚆 Using Railway.app database URL');
     return {
       host: process.env.DB_HOST || 'shuttle.proxy.rlwy.net',
-      port: process.env.DB_PORT || 35740,
+      port: parseInt(process.env.DB_PORT) || 35740,
       database: process.env.DB_NAME || 'railway',
       username: process.env.DB_USER || 'root',
       password: process.env.DB_PASSWORD || 'FYeDxMGArZDXDqBTYUivUysJiAbGqKtw',
@@ -29,10 +38,11 @@ const getDatabaseConfig = () => {
     };
   }
   
+  console.log('🏠 Using local development database configuration');
   // Local development
   return {
     host: process.env.DB_HOST || 'localhost',
-    port: process.env.DB_PORT || 3306,
+    port: parseInt(process.env.DB_PORT) || 3306,
     database: process.env.DB_NAME || 'nit_itvms',
     username: process.env.DB_USER || 'root',
     password: process.env.DB_PASSWORD || '',
