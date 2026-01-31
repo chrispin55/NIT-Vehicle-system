@@ -15,10 +15,8 @@ const RAILWAY_DB_CONFIG = {
   charset: 'utf8mb4',
   waitForConnections: true,
   connectionLimit: 10,
-  queueLimit: 0,
-  acquireTimeout: 60000,
-  timeout: 60000,
-  reconnect: true
+  queueLimit: 0
+  // Removed: acquireTimeout, timeout, reconnect (not supported by mysql2)
 };
 
 // Fallback configuration for local development
