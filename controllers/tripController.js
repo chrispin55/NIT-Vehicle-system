@@ -48,8 +48,7 @@ const getAllTrips = async (req, res) => {
       params.push(end_date);
     }
     
-    query += ' ORDER BY t.trip_date DESC, t.departure_time DESC LIMIT ? OFFSET ?';
-    params.push(parseInt(limit), offset);
+    query += ` ORDER BY t.trip_date DESC, t.departure_time DESC LIMIT ${parseInt(limit)} OFFSET ${offset}`;
     
     const [trips] = await pool.execute(query, params);
     
