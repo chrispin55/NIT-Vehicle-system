@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PROJECT KALI - ITVMS | NIT University Dar es Salaam</title>
+    
+    <!-- External CSS Libraries -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-container">
+        <div class="text-center mb-4">
+            <div class="bg-nit-blue rounded-circle d-inline-flex align-items-center justify-content-center p-3 mb-3">
+                <i class="fas fa-university text-white fa-3x"></i>
+            </div>
+            <h2 class="system-title">PROJECT KALI</h2>
+            <p class="text-muted">Integrated Transport & Vehicle Management System</p>
+            <h4>NIT University Dar es Salaam</h4>
+        </div>
+        
+        <form id="loginForm">
+            <div class="mb-3">
+                <label for="username" class="form-label">Username</label>
+                <input type="text" class="form-control" id="username" placeholder="Enter username" required>
+                <div class="form-text">Use "admin" for demo access</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">Password</label>
+                <input type="password" class="form-control" id="password" placeholder="Enter password" required>
+                <div class="form-text">Use "nit2023" for demo access</div>
+            </div>
+            <div class="mb-3 form-check">
+                <input type="checkbox" class="form-check-input" id="rememberMe">
+                <label class="form-check-label" for="rememberMe">Remember me</label>
+            </div>
+            <button type="submit" class="btn btn-nit w-100">
+                <i class="fas fa-sign-in-alt me-2"></i>Login
+            </button>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <p class="mb-0 text-muted">For demonstration purposes only</p>
+            <p class="small text-muted">System Administrator Access Required</p>
+        </div>
+    </div>
+
+    <!-- Main Application (Initially Hidden) -->
+    <div id="appContainer" class="hidden">
+        <!-- Header with NIT branding -->
+        <header class="nit-header">
+            <div class="container">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white rounded-circle p-2 me-3">
+                            <div class="rounded-circle bg-nit-blue d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                                <i class="fas fa-university text-white fs-4"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <h2 class="mb-0">NIT University</h2>
+                            <p class="mb-0">Dar es Salaam, Tanzania</p>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <h1 class="system-title mb-0">PROJECT KALI</h1>
+                        <p class="mb-0">Integrated Transport & Vehicle Management System (ITVMS)</p>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <div class="user-info">
+                            <i class="fas fa-user-circle me-2"></i>
+                            <span id="currentUser">Administrator</span>
+                        </div>
+                        <button id="logoutBtn" class="btn btn-sm logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Navigation -->
+        <div class="container mt-4">
+            <ul class="nav nav-pills justify-content-center mb-4" id="mainTab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="dashboard-tab" data-bs-toggle="pill" data-bs-target="#dashboard" type="button" role="tab">
+                        <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="vehicles-tab" data-bs-toggle="pill" data-bs-target="#vehicles" type="button" role="tab">
+                        <i class="fas fa-car me-2"></i>Vehicle Management
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="drivers-tab" data-bs-toggle="pill" data-bs-target="#drivers" type="button" role="tab">
+                        <i class="fas fa-user-tie me-2"></i>Driver Management
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="trips-tab" data-bs-toggle="pill" data-bs-target="#trips" type="button" role="tab">
+                        <i class="fas fa-route me-2"></i>Trip Management
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="maintenance-tab" data-bs-toggle="pill" data-bs-target="#maintenance" type="button" role="tab">
+                        <i class="fas fa-wrench me-2"></i>Maintenance
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="reports-tab" data-bs-toggle="pill" data-bs-target="#reports" type="button" role="tab">
+                        <i class="fas fa-chart-bar me-2"></i>Reports
+                    </button>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <main class="container">
+            <div class="tab-content" id="mainTabContent">
+                <!-- Dashboard Tab -->
+                <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="section-title">System Overview</h3>
+                        </div>
+                    </div>
+                    
+                    <!-- Stats Cards -->
+                    <div class="row">
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-car"></i>
+                                </div>
+                                <div class="stat-number" id="totalVehicles">0</div>
+                                <div class="stat-label">Total Vehicles</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-user-tie"></i>
+                                </div>
+                                <div class="stat-number" id="totalDrivers">0</div>
+                                <div class="stat-label">Active Drivers</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-route"></i>
+                                </div>
+                                <div class="stat-number" id="ongoingTrips">0</div>
+                                <div class="stat-label">Ongoing Trips</div>
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-sm-6">
+                            <div class="card stat-card">
+                                <div class="stat-icon">
+                                    <i class="fas fa-wrench"></i>
+                                </div>
+                                <div class="stat-number" id="underMaintenance">0</div>
+                                <div class="stat-label">Under Maintenance</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Charts Row -->
+                    <div class="row mt-4">
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-gas-pump me-2"></i>Monthly Fuel Cost Analysis
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="fuelCostChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-pie me-2"></i>Vehicle Status Distribution
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="vehicleStatusChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Recent Trips -->
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-list me-2"></i>Recent Trips
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Trip ID</th>
+                                                    <th>Route</th>
+                                                    <th>Driver</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Date</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="recentTripsTable">
+                                                <!-- Recent trips will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Vehicle Management Tab -->
+                <div class="tab-pane fade" id="vehicles" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="section-title">Vehicle Management</h3>
+                            <p>Add, update, and manage university vehicles</p>
+                        </div>
+                    </div>
+                    
+                    <!-- Add Vehicle Form -->
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-plus-circle me-2"></i>Add New Vehicle
+                                </div>
+                                <div class="card-body">
+                                    <form id="addVehicleForm">
+                                        <div class="mb-3">
+                                            <label for="plateNumber" class="form-label">Plate Number</label>
+                                            <input type="text" class="form-control" id="plateNumber" placeholder="e.g. T 123 ABC" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="vehicleType" class="form-label">Vehicle Type</label>
+                                            <select class="form-select" id="vehicleType" required>
+                                                <option value="">Select Type</option>
+                                                <option value="Bus">Bus</option>
+                                                <option value="Minibus">Minibus</option>
+                                                <option value="SUV">SUV</option>
+                                                <option value="Sedan">Sedan</option>
+                                                <option value="Pickup">Pickup Truck</option>
+                                                <option value="Van">Van</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="vehicleModel" class="form-label">Model</label>
+                                            <input type="text" class="form-control" id="vehicleModel" placeholder="e.g. Toyota Hiace" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="manufactureYear" class="form-label">Manufacture Year</label>
+                                            <input type="number" class="form-control" id="manufactureYear" min="2000" max="2023" placeholder="e.g. 2020" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="vehicleStatus" class="form-label">Status</label>
+                                            <select class="form-select" id="vehicleStatus" required>
+                                                <option value="Active">Active</option>
+                                                <option value="Under Maintenance">Under Maintenance</option>
+                                                <option value="Inactive">Inactive</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="vehicleCapacity" class="form-label">Passenger Capacity</label>
+                                            <input type="number" class="form-control" id="vehicleCapacity" min="1" max="100" placeholder="e.g. 15" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-nit w-100">
+                                            <i class="fas fa-plus-circle me-2"></i>Add Vehicle
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Vehicle List -->
+                        <div class="col-lg-7">
+                            <div class="card">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-list me-2"></i>Vehicle List
+                                    </div>
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="showActiveOnly">
+                                        <label class="form-check-label text-white" for="showActiveOnly">Active Only</label>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Plate No.</th>
+                                                    <th>Type</th>
+                                                    <th>Model</th>
+                                                    <th>Year</th>
+                                                    <th>Capacity</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="vehicleList">
+                                                <!-- Vehicle data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Driver Management Tab -->
+                <div class="tab-pane fade" id="drivers" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="section-title">Driver Management</h3>
+                            <p>Manage driver information and assignments</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-user-plus me-2"></i>Add New Driver
+                                </div>
+                                <div class="card-body">
+                                    <form id="addDriverForm">
+                                        <div class="mb-3">
+                                            <label for="driverName" class="form-label">Full Name</label>
+                                            <input type="text" class="form-control" id="driverName" placeholder="e.g. John Mwambene" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="licenseNumber" class="form-label">License Number</label>
+                                            <input type="text" class="form-control" id="licenseNumber" placeholder="e.g. DL-123456" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="phoneNumber" class="form-label">Phone Number</label>
+                                            <input type="tel" class="form-control" id="phoneNumber" placeholder="e.g. 255-789-456123" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="experience" class="form-label">Experience (Years)</label>
+                                            <input type="number" class="form-control" id="experience" min="1" max="50" placeholder="e.g. 5" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="assignedVehicle" class="form-label">Assigned Vehicle</label>
+                                            <select class="form-select" id="assignedVehicle">
+                                                <option value="">Not Assigned</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-nit w-100">
+                                            <i class="fas fa-user-plus me-2"></i>Add Driver
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-users me-2"></i>Driver List
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Driver ID</th>
+                                                    <th>Name</th>
+                                                    <th>License No.</th>
+                                                    <th>Phone</th>
+                                                    <th>Experience</th>
+                                                    <th>Assigned Vehicle</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="driverList">
+                                                <!-- Driver data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Trip Management Tab -->
+                <div class="tab-pane fade" id="trips" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="section-title">Trip / Route Management</h3>
+                            <p>Schedule and track vehicle trips</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-road me-2"></i>Schedule New Trip
+                                </div>
+                                <div class="card-body">
+                                    <form id="addTripForm">
+                                        <div class="mb-3">
+                                            <label for="tripRoute" class="form-label">Route (From → To)</label>
+                                            <input type="text" class="form-control" id="tripRoute" placeholder="e.g. NIT Campus → Julius Nyerere Airport" required>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tripDriver" class="form-label">Driver</label>
+                                                <select class="form-select" id="tripDriver" required>
+                                                    <option value="">Select Driver</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tripVehicle" class="form-label">Vehicle</label>
+                                                <select class="form-select" id="tripVehicle" required>
+                                                    <option value="">Select Vehicle</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tripDate" class="form-label">Date</label>
+                                                <input type="date" class="form-control" id="tripDate" required>
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="tripTime" class="form-label">Time</label>
+                                                <input type="time" class="form-control" id="tripTime" required>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-6 mb-3">
+                                                <label for="fuelUsed" class="form-label">Fuel Used (Liters)</label>
+                                                <input type="number" class="form-control" id="fuelUsed" min="0" step="0.1" placeholder="e.g. 25.5">
+                                            </div>
+                                            <div class="col-md-6 mb-3">
+                                                <label for="passengerCount" class="form-label">Passenger Count</label>
+                                                <input type="number" class="form-control" id="passengerCount" min="1" placeholder="e.g. 15">
+                                            </div>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="tripPurpose" class="form-label">Purpose</label>
+                                            <select class="form-select" id="tripPurpose" required>
+                                                <option value="">Select Purpose</option>
+                                                <option value="Academic">Academic</option>
+                                                <option value="Administrative">Administrative</option>
+                                                <option value="Event">Event</option>
+                                                <option value="Field Trip">Field Trip</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <button type="submit" class="btn btn-nit w-100">
+                                            <i class="fas fa-plus-circle me-2"></i>Schedule Trip
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-7">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-list me-2"></i>Trip List
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tripFilter" id="allTrips" value="all" checked>
+                                            <label class="form-check-label" for="allTrips">All Trips</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tripFilter" id="todayTrips" value="today">
+                                            <label class="form-check-label" for="todayTrips">Today</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" name="tripFilter" id="upcomingTrips" value="upcoming">
+                                            <label class="form-check-label" for="upcomingTrips">Upcoming</label>
+                                        </div>
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Trip ID</th>
+                                                    <th>Route</th>
+                                                    <th>Driver</th>
+                                                    <th>Vehicle</th>
+                                                    <th>Date & Time</th>
+                                                    <th>Status</th>
+                                                    <th>Actions</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="tripList">
+                                                <!-- Trip data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Maintenance Tab -->
+                <div class="tab-pane fade" id="maintenance" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="section-title">Maintenance Management</h3>
+                            <p>Track vehicle maintenance and service records</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-5">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-plus-circle me-2"></i>Add Service Record
+                                </div>
+                                <div class="card-body">
+                                    <form id="addMaintenanceForm">
+                                        <div class="mb-3">
+                                            <label for="maintenanceVehicle" class="form-label">Vehicle</label>
+                                            <select class="form-select" id="maintenanceVehicle" required>
+                                                <option value="">Select Vehicle</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="serviceDate" class="form-label">Service Date</label>
+                                            <input type="date" class="form-control" id="serviceDate" required>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="serviceType" class="form-label">Service Type</label>
+                                            <select class="form-select" id="serviceType" required>
+                                                <option value="">Select Type</option>
+                                                <option value="Routine Maintenance">Routine Maintenance</option>
+                                                <option value="Oil Change">Oil Change</option>
+                                                <option value="Brake Repair">Brake Repair</option>
+                                                <option value="Tire Replacement">Tire Replacement</option>
+                                                <option value="Engine Repair">Engine Repair</option>
+                                                <option value="Transmission Service">Transmission Service</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="serviceCost" class="form-label">Cost (TZS)</label>
+                                            <input type="number" class="form-control" id="serviceCost" min="0" placeholder="e.g. 150000">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="serviceDescription" class="form-label">Description</label>
+                                            <textarea class="form-control" id="serviceDescription" rows="3" placeholder="Describe the service performed..."></textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="nextServiceDate" class="form-label">Next Service Date</label>
+                                            <input type="date" class="form-control" id="nextServiceDate">
+                                        </div>
+                                        <button type="submit" class="btn btn-nit w-100">
+                                            <i class="fas fa-plus-circle me-2"></i>Add Service Record
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-7">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-list me-2"></i>Maintenance Records
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <input type="text" class="form-control" id="searchMaintenance" placeholder="Search by vehicle, type, or description...">
+                                    </div>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Vehicle</th>
+                                                    <th>Service Date</th>
+                                                    <th>Type</th>
+                                                    <th>Description</th>
+                                                    <th>Cost</th>
+                                                    <th>Next Service</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="maintenanceList">
+                                                <!-- Maintenance data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Reports Tab -->
+                <div class="tab-pane fade" id="reports" role="tabpanel">
+                    <div class="row">
+                        <div class="col-12">
+                            <h3 class="section-title">Reports & Analytics</h3>
+                            <p>Generate reports and view system analytics</p>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-file-alt me-2"></i>Generate Report
+                                </div>
+                                <div class="card-body">
+                                    <div class="mb-3">
+                                        <label for="reportType" class="form-label">Report Type</label>
+                                        <select class="form-select" id="reportType">
+                                            <option value="Vehicle Utilization">Vehicle Utilization</option>
+                                            <option value="Driver Performance">Driver Performance</option>
+                                            <option value="Fuel Consumption">Fuel Consumption</option>
+                                            <option value="Maintenance Summary">Maintenance Summary</option>
+                                            <option value="Cost Analysis">Cost Analysis</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="reportPeriod" class="form-label">Period</label>
+                                        <select class="form-select" id="reportPeriod">
+                                            <option value="This Month">This Month</option>
+                                            <option value="Last Month">Last Month</option>
+                                            <option value="This Quarter">This Quarter</option>
+                                            <option value="This Year">This Year</option>
+                                            <option value="custom">Custom Range</option>
+                                        </select>
+                                    </div>
+                                    <div id="customRange" class="d-none">
+                                        <div class="mb-3">
+                                            <label for="startDate" class="form-label">Start Date</label>
+                                            <input type="date" class="form-control" id="startDate">
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="endDate" class="form-label">End Date</label>
+                                            <input type="date" class="form-control" id="endDate">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-nit w-100" id="generateReport">
+                                        <i class="fas fa-download me-2"></i>Generate Report
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-lg-8">
+                            <div class="card">
+                                <div class="card-header">
+                                    <i class="fas fa-chart-line me-2"></i>Operational Cost Trends
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-container">
+                                        <canvas id="operationalCostChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="card mt-3">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <i class="fas fa-table me-2"></i>Monthly Summary
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-nit-outline" id="exportData">
+                                        <i class="fas fa-download me-1"></i>Export
+                                    </button>
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Month</th>
+                                                    <th>Total Trips</th>
+                                                    <th>Fuel Cost</th>
+                                                    <th>Maintenance Cost</th>
+                                                    <th>Operational Cost</th>
+                                                    <th>Utilization %</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="monthlySummary">
+                                                <!-- Monthly summary data will be populated here -->
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-university me-2"></i>NIT University</h5>
+                        <p>Dar es Salaam, Tanzania</p>
+                        <p class="small">Leading institution of higher education in Tanzania</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-cogs me-2"></i>PROJECT KALI</h5>
+                        <p>Integrated Transport & Vehicle Management System</p>
+                        <p class="small">Version 1.0.0</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h5><i class="fas fa-info-circle me-2"></i>System Info</h5>
+                        <p class="small">© 2023 NIT University Dar es Salaam</p>
+                        <p class="small">All rights reserved</p>
+                        <p class="small">For technical support: it-support@nit.ac.tz</p>
+                    </div>
+                </div>
+                <hr class="my-4" style="border-color: rgba(255,255,255,0.2);">
+                <div class="text-center">
+                    <p class="mb-0">Powered by <span class="text-warning">PROJECT KALI</span> - Excellence in Transportation Management</p>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- External JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+    
+    <!-- Custom JavaScript -->
+    <script src="js/app.js"></script>
+    <script src="js/events.js"></script>
+</body>
+</html>

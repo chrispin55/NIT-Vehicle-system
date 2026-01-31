@@ -1,0 +1,84 @@
+# Google App Engine Configuration
+# NIT University Dar es Salaam - PROJECT KALI ITVMS
+
+runtime: nodejs20
+instance_class: F2
+service: default
+
+# Automatic scaling configuration
+automatic_scaling:
+  min_instances: 1
+  max_instances: 5
+  min_idle_instances: 1
+  max_idle_instances: 2
+  min_pending_latency: automatic
+  max_pending_latency: automatic
+
+# Resource limits
+resources:
+  cpu: 1
+  memory_gb: 1
+  disk_size_gb: 10
+
+# Environment variables
+env_variables:
+  NODE_ENV: production
+  PORT: 8080
+  DB_HOST: localhost
+  DB_PORT: 3306
+  DB_NAME: nit_vehicle_management
+  DB_USER: root
+  JWT_SECRET: your-super-secret-jwt-key-change-this-in-production
+  CORS_ORIGIN: https://your-app-domain.uc.r.appspot.com
+  RATE_LIMIT_WINDOW_MS: 900000
+  RATE_LIMIT_MAX_REQUESTS: 100
+
+# Cloud SQL connection configuration
+beta_settings:
+  cloud_sql_instances: nit-vehicle-management:africa-east1:nit-vehicle-db
+
+# Health check configuration
+health_check:
+  enable_health_check: True
+  check_interval_sec: 30
+  timeout_sec: 4
+  unhealthy_threshold: 2
+  healthy_threshold: 2
+
+# Network configuration
+network:
+  forwarded_ports:
+    - 8080
+  session_affinity: true
+
+# Static file handlers
+handlers:
+  - url: /css
+    static_dir: css
+    secure: always
+    
+  - url: /js
+    static_dir: js
+    secure: always
+    
+  - url: /images
+    static_dir: images
+    secure: always
+    
+  - url: /.*
+    script: auto
+    secure: always
+
+# Deployment configuration
+deployment:
+  timeout: 900
+
+# Skip files for deployment
+skip_files:
+  - ^node_modules/
+  - ^\.git/
+  - ^\.env\.local
+  - ^\.env\.development
+  - ^README\.md
+  - ^\.gitignore
+  - ^gcp/service-account-key\.json
