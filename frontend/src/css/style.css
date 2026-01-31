@@ -1,0 +1,290 @@
+:root {
+    --nit-blue: #003366;
+    --nit-gold: #FFD700;
+    --nit-light: #E6F2FF;
+    --primary: #0d6efd;
+    --success: #198754;
+    --warning: #ffc107;
+    --danger: #dc3545;
+    --info: #0dcaf0;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.nit-header {
+    background: linear-gradient(135deg, var(--nit-blue) 0%, #00509e 100%);
+    color: white;
+    padding: 1.5rem 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.nit-logo {
+    height: 70px;
+    margin-right: 15px;
+}
+
+.system-title {
+    color: var(--nit-gold);
+    font-weight: 700;
+}
+
+.nav-pills .nav-link {
+    color: var(--nit-blue);
+    font-weight: 500;
+    border-radius: 8px;
+    margin: 0 5px;
+    transition: all 0.3s;
+}
+
+.nav-pills .nav-link.active {
+    background-color: var(--nit-blue);
+    color: white;
+}
+
+.nav-pills .nav-link:hover:not(.active) {
+    background-color: var(--nit-light);
+}
+
+.card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s;
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background-color: var(--nit-blue);
+    color: white;
+    font-weight: 600;
+    padding: 1rem 1.25rem;
+    border-bottom: 3px solid var(--nit-gold);
+}
+
+.dashboard-card {
+    border-left: 5px solid var(--nit-blue);
+}
+
+.stat-card {
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--nit-blue);
+}
+
+.stat-number {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--nit-blue);
+}
+
+.stat-label {
+    font-size: 0.9rem;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.vehicle-status-active {
+    border-left: 5px solid var(--success);
+}
+
+.vehicle-status-maintenance {
+    border-left: 5px solid var(--warning);
+}
+
+.vehicle-status-inactive {
+    border-left: 5px solid var(--danger);
+}
+
+.form-control, .form-select {
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    border: 1px solid #ddd;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--nit-blue);
+    box-shadow: 0 0 0 0.25rem rgba(0, 51, 102, 0.25);
+}
+
+.btn-nit {
+    background-color: var(--nit-blue);
+    color: white;
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    border: none;
+}
+
+.btn-nit:hover {
+    background-color: #002244;
+    color: white;
+}
+
+.btn-nit-outline {
+    background-color: transparent;
+    color: var(--nit-blue);
+    border: 2px solid var(--nit-blue);
+    border-radius: 8px;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+}
+
+.btn-nit-outline:hover {
+    background-color: var(--nit-blue);
+    color: white;
+}
+
+.table {
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.table thead {
+    background-color: var(--nit-blue);
+    color: white;
+}
+
+.badge-status {
+    padding: 0.4rem 0.8rem;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-active {
+    background-color: rgba(25, 135, 84, 0.15);
+    color: var(--success);
+}
+
+.badge-maintenance {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #856404;
+}
+
+.badge-trip {
+    background-color: rgba(13, 110, 253, 0.15);
+    color: var(--primary);
+}
+
+.tab-content {
+    padding-top: 2rem;
+}
+
+.footer {
+    background-color: var(--nit-blue);
+    color: white;
+    padding: 2rem 0;
+    margin-top: 3rem;
+}
+
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin-bottom: 1.5rem;
+}
+
+.login-container {
+    max-width: 450px;
+    margin: 3rem auto;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: white;
+}
+
+.section-title {
+    color: var(--nit-blue);
+    border-bottom: 3px solid var(--nit-gold);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.module-icon {
+    font-size: 2rem;
+    color: var(--nit-blue);
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px) {
+    .nit-logo {
+        height: 50px;
+    }
+    
+    .stat-number {
+        font-size: 1.8rem;
+    }
+}
+
+/* Loading spinner */
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(0, 51, 102, 0.3);
+    border-radius: 50%;
+    border-top-color: var(--nit-blue);
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Alert styles */
+.alert-custom {
+    border-radius: 8px;
+    border: none;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+
+.alert-success {
+    background-color: rgba(25, 135, 84, 0.1);
+    color: var(--success);
+    border-left: 4px solid var(--success);
+}
+
+.alert-error {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: var(--danger);
+    border-left: 4px solid var(--danger);
+}
+
+/* Button loading state */
+.btn-loading {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.7;
+}
+
+.btn-loading::after {
+    content: '';
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    margin: auto;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    border-top-color: #ffffff;
+    animation: spin 1s ease-in-out infinite;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
