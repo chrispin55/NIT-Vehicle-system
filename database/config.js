@@ -1,5 +1,4 @@
 const mysql = require('mysql2/promise');
-require('dotenv').config();
 
 const { logger, DatabaseError, handleDatabaseError } = require('../utils/errorHandler');
 
@@ -17,7 +16,9 @@ const dbConfig = {
 
 // Use Cloud SQL in production (disabled for now)
 const isProduction = process.env.NODE_ENV === 'production';
-const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production' || process.env.RAILWAY_PRIVATE_MYSQL_HOST;
+const isRailway = process.env.RAILWAY_ENVIRONMENT === 'production' || 
+                    process.env.RAILWAY_PRIVATE_MYSQL_HOST || 
+                    process.env.RAILWAY_PUBLIC_DOMAIN; // Railway sets this
 const useCloudSQL = false; // Disabled until Cloud SQL is properly configured
 
 let pool;
@@ -32,6 +33,15 @@ async function initializePool() {
       logger.info('👤 Railway MySQL User:', process.env.RAILWAY_PRIVATE_MYSQL_USER);
       logger.info('💾 Railway MySQL Database:', process.env.RAILWAY_PRIVATE_MYSQL_DATABASE_NAME);
       logger.info('🏗️ Railway Environment:', process.env.RAILWAY_ENVIRONMENT);
+      logger.info('🌐 Railway Public Domain:', process.env.RAILWAY_PUBLIC_DOMAIN);
+      
+      // Log all environment variables for debugging
+      logger.info('📋 All Environment Variables:');
+      Object.keys(process.env).forEach(key => {
+        if (key.includes('RAILWAY') || key.includes('MYSQL') || key === 'NODE_ENV') {
+          logger.info(`  ${key}: ${process.env[key]}`);
+        }
+      });
     }
     
     if (isRailway) {
