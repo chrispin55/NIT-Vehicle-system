@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
     loadSampleData();
     initializeCharts();
+    
+    console.log('✅ Interactive frontend initialization complete');
 });
 
 function initializeInteractiveFeatures() {
@@ -15,7 +17,7 @@ function initializeInteractiveFeatures() {
     // Tab switching
     setupTabSwitching();
     
-    // Form handling
+    // Form handling - CRITICAL
     setupFormHandlers();
     
     // Modal functionality
@@ -30,69 +32,90 @@ function initializeInteractiveFeatures() {
     console.log('✅ Interactive features initialized');
 }
 
-function setupTabSwitching() {
-    const tabButtons = document.querySelectorAll('[data-bs-toggle="pill"]');
-    tabButtons.forEach(button => {
-        button.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Remove active class from all tabs
-            document.querySelectorAll('.nav-link').forEach(tab => {
-                tab.classList.remove('active');
-            });
-            document.querySelectorAll('.tab-pane').forEach(pane => {
-                pane.classList.remove('show', 'active');
-            });
-            
-            // Add active class to clicked tab
-            this.classList.add('active');
-            const targetId = this.getAttribute('data-bs-target');
-            const targetPane = document.querySelector(targetId);
-            if (targetPane) {
-                targetPane.classList.add('show', 'active');
-            }
-            
-            console.log(`🔄 Switched to tab: ${targetId}`);
-        });
-    });
-}
-
 function setupFormHandlers() {
-    // Vehicle Form
+    console.log('📝 Setting up form handlers...');
+    
+    // Vehicle Form - MOST IMPORTANT
     const vehicleForm = document.getElementById('vehicleForm');
+    console.log('🔍 Vehicle form found:', !!vehicleForm);
+    
     if (vehicleForm) {
+        // Remove any existing listeners
+        vehicleForm.removeEventListener('submit', handleVehicleSubmit);
+        // Add new listener
         vehicleForm.addEventListener('submit', function(e) {
+            console.log('🚗 Vehicle form submit event triggered!');
             e.preventDefault();
             handleVehicleSubmit();
         });
+        console.log('✅ Vehicle form handler attached');
+    } else {
+        console.error('❌ Vehicle form not found!');
     }
     
     // Driver Form
     const driverForm = document.getElementById('driverForm');
+    console.log('🔍 Driver form found:', !!driverForm);
+    
     if (driverForm) {
         driverForm.addEventListener('submit', function(e) {
+            console.log('👤 Driver form submit event triggered!');
             e.preventDefault();
             handleDriverSubmit();
         });
+        console.log('✅ Driver form handler attached');
     }
     
     // Trip Form
     const tripForm = document.getElementById('tripForm');
+    console.log('🔍 Trip form found:', !!tripForm);
+    
     if (tripForm) {
         tripForm.addEventListener('submit', function(e) {
+            console.log('🛣️ Trip form submit event triggered!');
             e.preventDefault();
             handleTripSubmit();
         });
+        console.log('✅ Trip form handler attached');
     }
     
     // Maintenance Form
     const maintenanceForm = document.getElementById('maintenanceForm');
+    console.log('🔍 Maintenance form found:', !!maintenanceForm);
+    
     if (maintenanceForm) {
         maintenanceForm.addEventListener('submit', function(e) {
+            console.log('🔧 Maintenance form submit event triggered!');
             e.preventDefault();
             handleMaintenanceSubmit();
         });
+        console.log('✅ Maintenance form handler attached');
     }
+    
+    // Also setup button click handlers as backup
+    setupButtonHandlers();
+}
+
+function setupButtonHandlers() {
+    console.log('🔘 Setting up button handlers as backup...');
+    
+    // Vehicle Add Button
+    const vehicleButtons = document.querySelectorAll('button[onclick*="vehicle"], button[data-target*="vehicle"], #addVehicleBtn, .btn-primary');
+    console.log('🔍 Found buttons:', vehicleButtons.length);
+    
+    vehicleButtons.forEach((button, index) => {
+        console.log(`🔘 Button ${index}:`, button.textContent, button.id, button.className);
+        
+        // Check if this is a vehicle add button
+        if (button.textContent.includes('Add Vehicle') || button.textContent.includes('Save Vehicle') || button.id === 'addVehicleBtn') {
+            console.log('✅ Found vehicle add button, attaching handler');
+            button.addEventListener('click', function(e) {
+                console.log('🚗 Vehicle button clicked!');
+                e.preventDefault();
+                handleVehicleSubmit();
+            });
+        }
+    });
 }
 
 function setupModals() {
@@ -172,19 +195,34 @@ function applyFilters() {
 // Form submission handlers - COMPLETELY FRONTEND ONLY
 function handleVehicleSubmit() {
     console.log('🚗 Vehicle form submission - FRONTEND ONLY MODE');
+    console.log('🔍 Checking form elements...');
+    
+    // Test form elements
+    const plateNumber = document.getElementById('plateNumber');
+    const vehicleMake = document.getElementById('vehicleMake');
+    const vehicleModel = document.getElementById('vehicleModel');
+    
+    console.log('🔍 Form elements found:', {
+        plateNumber: !!plateNumber,
+        vehicleMake: !!vehicleMake,
+        vehicleModel: !!vehicleModel
+    });
     
     const formData = {
         id: Date.now(), // Add unique ID
-        plateNumber: document.getElementById('plateNumber')?.value || '',
-        make: document.getElementById('vehicleMake')?.value || '',
-        model: document.getElementById('vehicleModel')?.value || '',
+        plateNumber: plateNumber?.value || '',
+        make: vehicleMake?.value || '',
+        model: vehicleModel?.value || '',
         year: document.getElementById('vehicleYear')?.value || '',
         type: document.getElementById('vehicleType')?.value || '',
         status: 'active'
     };
     
+    console.log('🚗 Form data collected:', formData);
+    
     // Validate required fields
     if (!formData.plateNumber || !formData.make || !formData.model) {
+        console.log('⚠️ Validation failed - missing required fields');
         showNotification('Please fill in all required fields', 'warning');
         return;
     }
@@ -203,7 +241,11 @@ function handleVehicleSubmit() {
         showNotification('Vehicle added successfully! (Saved in browser only)', 'success');
         
         // Reset form
-        document.getElementById('vehicleForm')?.reset();
+        const form = document.getElementById('vehicleForm');
+        if (form) {
+            form.reset();
+            console.log('✅ Form reset');
+        }
         
         console.log('✅ Vehicle added successfully to frontend');
         
@@ -212,6 +254,14 @@ function handleVehicleSubmit() {
         showNotification('Error adding vehicle', 'danger');
     }
 }
+
+// Test function - call this manually to test
+window.testVehicleForm = function() {
+    console.log('🧪 Testing vehicle form manually...');
+    handleVehicleSubmit();
+};
+
+console.log('🧪 Test function available: window.testVehicleForm()');
 
 function handleDriverSubmit() {
     const formData = {
