@@ -5,7 +5,7 @@
 class ModernITVMS {
     constructor() {
         this.apiBase = window.location.origin + '/api';
-        this.token = localStorage.getItem('itvms_token');
+        this.token = null;
         this.user = null;
         this.data = {
             vehicles: [],
@@ -31,13 +31,8 @@ class ModernITVMS {
             // Setup form validation
             this.setupFormValidation();
             
-            // Check authentication
-            if (this.token) {
-                await this.validateToken();
-                await this.loadDashboardData();
-            } else {
-                this.showLoginScreen();
-            }
+            // Check authentication status from server
+            await this.checkAuthStatus();
             
             console.log('✅ Application initialized successfully');
             
@@ -245,6 +240,24 @@ class ModernITVMS {
     }
 
     // Authentication methods
+    async checkAuthStatus() {
+        try {
+            // Check if user is authenticated by calling validate endpoint
+            const response = await this.apiRequest('/auth/validate');
+            this.user = response.user;
+            this.token = response.token;
+            
+            // User is authenticated, load dashboard
+            this.showDashboard();
+            await this.loadDashboardData();
+            
+        } catch (error) {
+            // User is not authenticated, show login screen
+            console.log('User not authenticated, showing login screen');
+            this.showLoginScreen();
+        }
+    }
+
     async handleLogin(e) {
         e.preventDefault();
         
@@ -261,11 +274,9 @@ class ModernITVMS {
                 body: JSON.stringify({ username, password })
             });
 
-            // Store token and user data
+            // Store token and user data in memory only
             this.token = response.token;
             this.user = response.user;
-            localStorage.setItem('itvms_token', this.token);
-            localStorage.setItem('itvms_user', JSON.stringify(this.user));
 
             // Show success message
             this.showSuccess('Login successful! Redirecting...');
@@ -273,6 +284,7 @@ class ModernITVMS {
             // Redirect to dashboard
             setTimeout(() => {
                 this.showDashboard();
+                this.loadDashboardData();
             }, 1500);
 
         } catch (error) {
@@ -295,8 +307,6 @@ class ModernITVMS {
     }
 
     handleTokenExpired() {
-        localStorage.removeItem('itvms_token');
-        localStorage.removeItem('itvms_user');
         this.token = null;
         this.user = null;
         this.showLoginScreen();
@@ -310,9 +320,7 @@ class ModernITVMS {
         } catch (error) {
             console.error('Logout API call failed:', error);
         } finally {
-            // Clear local storage
-            localStorage.removeItem('itvms_token');
-            localStorage.removeItem('itvms_user');
+            // Clear memory
             this.token = null;
             this.user = null;
             
@@ -363,16 +371,16 @@ class ModernITVMS {
         }
     }
 
-    // Data loading methods
+    // Data loading methods - Always fetch fresh data from database
     async loadDashboardData() {
         try {
             this.showLoading('dashboard');
             
-            // Load statistics
+            // Load fresh statistics from database
             const stats = await this.apiRequest('/vehicles/stats');
             this.updateDashboardStats(stats);
             
-            // Load recent trips
+            // Load fresh recent trips from database
             const trips = await this.apiRequest('/trips?limit=5');
             this.renderRecentTrips(trips);
             
@@ -380,7 +388,8 @@ class ModernITVMS {
             
         } catch (error) {
             this.hideLoading('dashboard');
-            console.error('Failed to load dashboard data:', error);
+            console.error('Failed to load dashboard data from database:', error);
+            this.showError('Failed to load dashboard data. Please refresh the page.');
         }
     }
 
@@ -388,6 +397,7 @@ class ModernITVMS {
         try {
             this.showLoading('vehicles');
             
+            // Load fresh vehicles from database
             const vehicles = await this.apiRequest('/vehicles');
             this.data.vehicles = vehicles;
             this.renderVehicles(vehicles);
@@ -396,7 +406,8 @@ class ModernITVMS {
             
         } catch (error) {
             this.hideLoading('vehicles');
-            console.error('Failed to load vehicles:', error);
+            console.error('Failed to load vehicles from database:', error);
+            this.showError('Failed to load vehicles. Please refresh the page.');
         }
     }
 
@@ -404,6 +415,7 @@ class ModernITVMS {
         try {
             this.showLoading('drivers');
             
+            // Load fresh drivers from database
             const drivers = await this.apiRequest('/drivers');
             this.data.drivers = drivers;
             this.renderDrivers(drivers);
@@ -412,7 +424,8 @@ class ModernITVMS {
             
         } catch (error) {
             this.hideLoading('drivers');
-            console.error('Failed to load drivers:', error);
+            console.error('Failed to load drivers from database:', error);
+            this.showError('Failed to load drivers. Please refresh the page.');
         }
     }
 
@@ -420,6 +433,7 @@ class ModernITVMS {
         try {
             this.showLoading('trips');
             
+            // Load fresh trips from database
             const trips = await this.apiRequest('/trips');
             this.data.trips = trips;
             this.renderTrips(trips);
@@ -428,7 +442,8 @@ class ModernITVMS {
             
         } catch (error) {
             this.hideLoading('trips');
-            console.error('Failed to load trips:', error);
+            console.error('Failed to load trips from database:', error);
+            this.showError('Failed to load trips. Please refresh the page.');
         }
     }
 
@@ -436,6 +451,7 @@ class ModernITVMS {
         try {
             this.showLoading('maintenance');
             
+            // Load fresh maintenance records from database
             const maintenance = await this.apiRequest('/maintenance');
             this.data.maintenance = maintenance;
             this.renderMaintenance(maintenance);
@@ -444,7 +460,8 @@ class ModernITVMS {
             
         } catch (error) {
             this.hideLoading('maintenance');
-            console.error('Failed to load maintenance records:', error);
+            console.error('Failed to load maintenance records from database:', error);
+            this.showError('Failed to load maintenance records. Please refresh the page.');
         }
     }
 
