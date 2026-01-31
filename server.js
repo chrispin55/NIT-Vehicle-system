@@ -61,18 +61,39 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Static files for frontend
-app.use(express.static('public'));
+app.use('/css', express.static('css'));
+app.use('/js', express.static('js'));
+app.use(express.static('.'));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development',
-    version: process.env.APP_VERSION || '1.0.0',
-    name: process.env.APP_NAME || 'PROJECT KALI - ITVMS'
-  });
+app.get('/health', async (req, res) => {
+  try {
+    const { testConnection } = require('./database/config');
+    const dbConnected = await testConnection();
+    
+    res.status(200).json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      version: process.env.APP_VERSION || '1.0.0',
+      name: process.env.APP_NAME || 'PROJECT KALI - ITVMS',
+      database: dbConnected ? 'connected' : 'disconnected',
+      university: 'NIT University Dar es Salaam'
+    });
+  } catch (error) {
+    res.status(200).json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      version: process.env.APP_VERSION || '1.0.0',
+      name: process.env.APP_NAME || 'PROJECT KALI - ITVMS',
+      database: 'error',
+      error: error.message,
+      university: 'NIT University Dar es Salaam'
+    });
+  }
 });
 
 // API routes
