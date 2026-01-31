@@ -1,9 +1,9 @@
-// Main Application JavaScript
+// Main Application JavaScript - FRONTEND ONLY MODE
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 DOM Content Loaded - Starting NIT ITVMS');
+    console.log('🚀 DOM Content Loaded - Starting NIT ITVMS (Frontend Only Mode)');
     
-    // Test API connection first
-    testAPIConnection();
+    // NO API CONNECTION TEST - Frontend Only Mode
+    console.log('🔌 Frontend Only Mode - No API Connection Required');
     
     // Initialize application
     initializeApp();
@@ -11,27 +11,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Set up event listeners
     setupEventListeners();
     
-    // Load initial data
-    loadDashboardData();
+    // NO DASHBOARD DATA LOADING - Handled by interactive-app.js
+    console.log('📊 Dashboard will be loaded by interactive-app.js');
 });
-
-// Test API connection
-async function testAPIConnection() {
-    console.log('🔍 Testing API connection...');
-    try {
-        const response = await fetch(`${window.location.origin}/health`);
-        const data = await response.json();
-        console.log('✅ Health check successful:', data);
-        
-        // Test API endpoint
-        const apiResponse = await fetch(`${window.location.origin}/api-info`);
-        const apiData = await apiResponse.json();
-        console.log('✅ API info successful:', apiData);
-    } catch (error) {
-        console.error('❌ API connection test failed:', error);
-        api.showAlert('API connection failed. Please check if the server is running.', 'danger');
-    }
-}
 
 function initializeApp() {
     // Set default date values
@@ -112,72 +94,22 @@ function loadTabData(target) {
     }
 }
 
-// Dashboard Functions
+// Dashboard Functions - DISABLED (Handled by interactive-app.js)
 async function loadDashboardData() {
-    console.log('📊 Loading dashboard data...');
-    try {
-        // Load overview statistics
-        const overview = await api.getDashboardOverview();
-        console.log('📈 Dashboard overview loaded:', overview);
-        updateDashboardStats(overview);
-        
-        // Load recent trips
-        const recentTrips = await api.getRecentTrips();
-        console.log('🚗 Recent trips loaded:', recentTrips);
-        updateRecentTripsTable(recentTrips);
-        
-        // Load charts data
-        loadDashboardCharts();
-    } catch (error) {
-        console.error('❌ Error loading dashboard data:', error);
-        api.showAlert('Error loading dashboard data. Please check your connection.', 'danger');
-    }
+    console.log('📊 loadDashboardData DISABLED - Using interactive-app.js instead');
+    // This function is disabled - interactive-app.js handles dashboard loading
 }
 
 function updateDashboardStats(overview) {
-    document.getElementById('totalVehicles').textContent = overview.vehicles.total;
-    document.getElementById('activeDrivers').textContent = overview.drivers.active;
-    document.getElementById('ongoingTrips').textContent = overview.trips.ongoing;
-    document.getElementById('underMaintenance').textContent = overview.maintenance.upcoming;
+    console.log('📈 updateDashboardStats DISABLED - Using interactive-app.js instead');
 }
 
 function updateRecentTripsTable(trips) {
-    const tbody = document.getElementById('recentTripsTable');
-    if (!tbody) return;
-    
-    if (trips.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="6" class="text-center">No trips found</td></tr>';
-        return;
-    }
-    
-    tbody.innerHTML = trips.map(trip => `
-        <tr>
-            <td>${trip.trip_id}</td>
-            <td>${trip.route}</td>
-            <td>${trip.driver?.full_name || 'N/A'}</td>
-            <td>${trip.vehicle?.plate_number || 'N/A'}</td>
-            <td>${formatDateTime(trip.trip_date, trip.trip_time)}</td>
-            <td><span class="badge-status badge-${trip.status.toLowerCase().replace(' ', '-')}">${trip.status}</span></td>
-        </tr>
-    `).join('');
+    console.log('🚗 updateRecentTripsTable DISABLED - Using interactive-app.js instead');
 }
 
-async function loadDashboardCharts() {
-    try {
-        // Load fuel analysis data
-        const fuelData = await api.getFuelAnalysis();
-        createFuelCostChart(fuelData);
-        
-        // Load vehicle status data
-        const vehicleStatus = await api.getVehicleStatus();
-        createVehicleStatusChart(vehicleStatus);
-        
-        // Load operational costs
-        const operationalCosts = await api.getOperationalCosts();
-        createOperationalCostChart(operationalCosts);
-    } catch (error) {
-        console.error('Error loading charts:', error);
-    }
+function loadDashboardCharts() {
+    console.log('📊 loadDashboardCharts DISABLED - Using interactive-app.js instead');
 }
 
 // Vehicle Functions

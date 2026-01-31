@@ -169,8 +169,10 @@ function applyFilters() {
     console.log('🔄 Applying filters...');
 }
 
-// Form submission handlers
+// Form submission handlers - COMPLETELY FRONTEND ONLY
 function handleVehicleSubmit() {
+    console.log('🚗 Vehicle form submission - FRONTEND ONLY MODE');
+    
     const formData = {
         id: Date.now(), // Add unique ID
         plateNumber: document.getElementById('plateNumber')?.value || '',
@@ -187,17 +189,28 @@ function handleVehicleSubmit() {
         return;
     }
     
-    console.log('🚗 Vehicle form submitted:', formData);
-    showNotification('Vehicle added successfully!', 'success');
+    console.log('🚗 Vehicle data prepared (FRONTEND ONLY):', formData);
     
-    // Reset form
-    document.getElementById('vehicleForm')?.reset();
-    
-    // Add to table
-    addVehicleToTable(formData);
-    
-    // Update dashboard stats
-    updateDashboardStats();
+    // NO API CALL - Direct frontend update only
+    try {
+        // Add to table immediately
+        addVehicleToTable(formData);
+        
+        // Update dashboard stats
+        updateDashboardStats();
+        
+        // Show success
+        showNotification('Vehicle added successfully! (Saved in browser only)', 'success');
+        
+        // Reset form
+        document.getElementById('vehicleForm')?.reset();
+        
+        console.log('✅ Vehicle added successfully to frontend');
+        
+    } catch (error) {
+        console.error('❌ Error adding vehicle to frontend:', error);
+        showNotification('Error adding vehicle', 'danger');
+    }
 }
 
 function handleDriverSubmit() {
