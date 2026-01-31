@@ -31,8 +31,10 @@ class ModernITVMS {
             // Setup form validation
             this.setupFormValidation();
             
-            // Check authentication status from server
-            await this.checkAuthStatus();
+            // Skip authentication and go directly to dashboard
+            console.log('🔓 Authentication disabled - accessing system directly');
+            this.showDashboard();
+            await this.loadDashboardData();
             
             console.log('✅ Application initialized successfully');
             

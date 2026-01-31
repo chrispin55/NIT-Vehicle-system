@@ -1,15 +1,16 @@
 const express = require('express');
 const router = express.Router();
 
-const { pool } = require('../database/config');
-const { authenticateToken, authorizeRoles } = require('../middleware/auth');
+const { getPool } = require('../database/config');
 const { validateMaintenance, validateId, validateDateRange } = require('../middleware/validation');
 
-// Get all maintenance records
-router.get('/', authenticateToken, validateDateRange, async (req, res) => {
+// Get all maintenance records (no authentication required)
+router.get('/', validateDateRange, async (req, res) => {
   try {
     const { vehicle_id, status, start_date, end_date, page = 1, limit = 10 } = req.query;
     const offset = (page - 1) * limit;
+    
+    const pool = await getPool();
     
     let query = `
       SELECT mr.*, 
@@ -175,6 +176,7 @@ router.post('/',
       }
       
       // Return the created record
+      const pool = await getPool();
       const [newRecord] = await pool.execute(`
         SELECT mr.*, 
                v.plate_number, 
@@ -260,6 +262,7 @@ router.put('/:id',
       }
       
       // Return updated record
+      const pool = await getPool();
       const [updatedRecord] = await pool.execute(`
         SELECT mr.*, 
                v.plate_number, 
@@ -321,9 +324,10 @@ router.delete('/:id',
   }
 );
 
-// Get maintenance statistics
-router.get('/stats/overview', authenticateToken, async (req, res) => {
+// Get maintenance statistics (no authentication required)
+router.get('/stats/overview', async (req, res) => {
   try {
+    const pool = await getPool();
     const [stats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_records,

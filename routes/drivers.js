@@ -2,39 +2,24 @@ const express = require('express');
 const router = express.Router();
 
 const driverController = require('../controllers/driverController');
-const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { validateDriver, validateId } = require('../middleware/validation');
 
-// Public routes (with optional auth)
+// Public routes (no authentication required)
 router.get('/stats', driverController.getDriverStats);
 
-// Protected routes
-router.use(authenticateToken);
-
-// Get all drivers (accessible to all authenticated users)
+// Get all drivers (no authentication required)
 router.get('/', driverController.getAllDrivers);
 
-// Get driver by ID
+// Get driver by ID (no authentication required)
 router.get('/:id', validateId, driverController.getDriverById);
 
-// Admin/Manager only routes
-router.post('/', 
-  authorizeRoles('admin', 'manager'), 
-  validateDriver, 
-  driverController.createDriver
-);
+// Create driver (no authentication required)
+router.post('/', validateDriver, driverController.createDriver);
 
-router.put('/:id', 
-  authorizeRoles('admin', 'manager'), 
-  validateId, 
-  validateDriver, 
-  driverController.updateDriver
-);
+// Update driver (no authentication required)
+router.put('/:id', validateId, validateDriver, driverController.updateDriver);
 
-router.delete('/:id', 
-  authorizeRoles('admin'), 
-  validateId, 
-  driverController.deleteDriver
-);
+// Delete driver (no authentication required)
+router.delete('/:id', validateId, driverController.deleteDriver);
 
 module.exports = router;

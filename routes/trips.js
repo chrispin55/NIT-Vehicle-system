@@ -2,39 +2,24 @@ const express = require('express');
 const router = express.Router();
 
 const tripController = require('../controllers/tripController');
-const { authenticateToken, authorizeRoles } = require('../middleware/auth');
 const { validateTrip, validateId, validateDateRange } = require('../middleware/validation');
 
-// Public routes (with optional auth)
-router.get('/stats', validateDateRange, tripController.getTripStats);
+// Public routes (no authentication required)
+router.get('/stats', tripController.getTripStats);
 
-// Protected routes
-router.use(authenticateToken);
+// Get all trips (no authentication required)
+router.get('/', tripController.getAllTrips);
 
-// Get all trips (accessible to all authenticated users)
-router.get('/', validateDateRange, tripController.getAllTrips);
-
-// Get trip by ID
+// Get trip by ID (no authentication required)
 router.get('/:id', validateId, tripController.getTripById);
 
-// Admin/Manager only routes
-router.post('/', 
-  authorizeRoles('admin', 'manager'), 
-  validateTrip, 
-  tripController.createTrip
-);
+// Create trip (no authentication required)
+router.post('/', validateTrip, tripController.createTrip);
 
-router.put('/:id', 
-  authorizeRoles('admin', 'manager'), 
-  validateId, 
-  validateTrip, 
-  tripController.updateTrip
-);
+// Update trip (no authentication required)
+router.put('/:id', validateId, validateTrip, tripController.updateTrip);
 
-router.delete('/:id', 
-  authorizeRoles('admin'), 
-  validateId, 
-  tripController.deleteTrip
-);
+// Delete trip (no authentication required)
+router.delete('/:id', validateId, tripController.deleteTrip);
 
 module.exports = router;
