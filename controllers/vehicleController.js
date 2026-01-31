@@ -317,6 +317,7 @@ const deleteVehicle = async (req, res) => {
 // Get vehicle statistics
 const getVehicleStats = async (req, res) => {
   try {
+    const pool = await getPool();
     const [stats] = await pool.execute(`
       SELECT 
         COUNT(*) as total_vehicles,

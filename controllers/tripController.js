@@ -9,6 +9,7 @@ const getAllTrips = async (req, res) => {
     // Get database pool
     const pool = await getPool();
     
+    // Build query with parameters
     let query = `
       SELECT t.*, 
              d.full_name as driver_name,
