@@ -39,8 +39,9 @@ class ModernITVMS {
             console.log('✅ Application initialized successfully');
             
         } catch (error) {
-            console.error('❌ Failed to initialize application:', error);
+            console.error('❌ Error during initialization:', error);
             this.showError('Failed to initialize application. Please refresh the page.');
+            throw error;
         }
     }
 
@@ -387,8 +388,24 @@ class ModernITVMS {
     }
 
     showDashboard() {
-        document.getElementById('loginScreen').classList.add('hidden');
-        document.getElementById('appContainer').classList.remove('hidden');
+        try {
+            const loginScreen = document.getElementById('loginScreen');
+            const appContainer = document.getElementById('appContainer');
+            
+            if (loginScreen) {
+                loginScreen.classList.add('hidden');
+            }
+            
+            if (appContainer) {
+                appContainer.classList.remove('hidden');
+            } else {
+                console.error('❌ App container not found');
+                this.showError('Application container not found. Please refresh the page.');
+            }
+        } catch (error) {
+            console.error('❌ Error showing dashboard:', error);
+            this.showError('Failed to load dashboard. Please refresh the page.');
+        }
         
         // Update user info
         if (this.user) {
@@ -1264,7 +1281,25 @@ class ModernITVMS {
 
 // Initialize the application when DOM is ready
 document.addEventListener('DOMContentLoaded', () => {
-    window.app = new ModernITVMS();
+    try {
+        console.log('🚀 DOM loaded, initializing application...');
+        window.app = new ModernITVMS();
+        console.log('✅ Application initialized successfully');
+    } catch (error) {
+        console.error('❌ Error initializing application:', error);
+        // Show user-friendly error message
+        document.body.innerHTML = `
+            <div style="display: flex; justify-content: center; align-items: center; height: 100vh; font-family: Arial, sans-serif;">
+                <div style="text-align: center; padding: 2rem; background: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                    <h2 style="color: #dc3545; margin-bottom: 1rem;">Application Error</h2>
+                    <p style="color: #6c757d; margin-bottom: 1rem;">There was an error loading the application.</p>
+                    <button onclick="location.reload()" style="padding: 0.5rem 1rem; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                        Reload Page
+                    </button>
+                </div>
+            </div>
+        `;
+    }
 });
 
 // Export for use in other scripts
