@@ -1,5 +1,10 @@
 // Main Application JavaScript
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 DOM Content Loaded - Starting NIT ITVMS');
+    
+    // Test API connection first
+    testAPIConnection();
+    
     // Initialize application
     initializeApp();
     
@@ -9,6 +14,24 @@ document.addEventListener('DOMContentLoaded', function() {
     // Load initial data
     loadDashboardData();
 });
+
+// Test API connection
+async function testAPIConnection() {
+    console.log('🔍 Testing API connection...');
+    try {
+        const response = await fetch(`${window.location.origin}/health`);
+        const data = await response.json();
+        console.log('✅ Health check successful:', data);
+        
+        // Test API endpoint
+        const apiResponse = await fetch(`${window.location.origin}/api-info`);
+        const apiData = await apiResponse.json();
+        console.log('✅ API info successful:', apiData);
+    } catch (error) {
+        console.error('❌ API connection test failed:', error);
+        api.showAlert('API connection failed. Please check if the server is running.', 'danger');
+    }
+}
 
 function initializeApp() {
     // Set default date values
@@ -91,20 +114,23 @@ function loadTabData(target) {
 
 // Dashboard Functions
 async function loadDashboardData() {
+    console.log('📊 Loading dashboard data...');
     try {
         // Load overview statistics
         const overview = await api.getDashboardOverview();
+        console.log('📈 Dashboard overview loaded:', overview);
         updateDashboardStats(overview);
         
         // Load recent trips
         const recentTrips = await api.getRecentTrips();
+        console.log('🚗 Recent trips loaded:', recentTrips);
         updateRecentTripsTable(recentTrips);
         
         // Load charts data
         loadDashboardCharts();
     } catch (error) {
-        console.error('Error loading dashboard data:', error);
-        showAlert('Failed to load dashboard data', 'danger');
+        console.error('❌ Error loading dashboard data:', error);
+        api.showAlert('Error loading dashboard data. Please check your connection.', 'danger');
     }
 }
 

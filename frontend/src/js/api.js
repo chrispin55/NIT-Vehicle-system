@@ -3,16 +3,23 @@ const API_BASE_URL = window.location.hostname === 'localhost' || window.location
     ? 'http://localhost:3000/api'
     : `${window.location.origin}/api`;
 
+console.log('🔗 API Configuration:');
+console.log('Hostname:', window.location.hostname);
+console.log('API Base URL:', API_BASE_URL);
+
 // API helper functions
 class API {
     constructor() {
         this.baseURL = API_BASE_URL;
         this.token = localStorage.getItem('authToken');
+        console.log('🔑 API initialized with base URL:', this.baseURL);
     }
 
     // Generic request method
     async request(endpoint, options = {}) {
         const url = `${this.baseURL}${endpoint}`;
+        console.log(`🌐 Making ${options.method || 'GET'} request to:`, url);
+        
         const config = {
             headers: {
                 'Content-Type': 'application/json',
@@ -28,15 +35,20 @@ class API {
 
         try {
             const response = await fetch(url, config);
+            console.log(`📡 Response status: ${response.status} for ${url}`);
+            
             const data = await response.json();
+            console.log(`📦 Response data:`, data);
 
             if (!response.ok) {
+                console.error(`❌ API Error (${response.status}):`, data);
                 throw new Error(data.error || data.message || 'Request failed');
             }
 
+            console.log(`✅ Successful response from ${url}`);
             return data;
         } catch (error) {
-            console.error('API Error:', error);
+            console.error(`❌ API Request Failed for ${url}:`, error);
             throw error;
         }
     }
