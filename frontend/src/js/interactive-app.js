@@ -172,13 +172,20 @@ function applyFilters() {
 // Form submission handlers
 function handleVehicleSubmit() {
     const formData = {
+        id: Date.now(), // Add unique ID
+        plateNumber: document.getElementById('plateNumber')?.value || '',
         make: document.getElementById('vehicleMake')?.value || '',
         model: document.getElementById('vehicleModel')?.value || '',
         year: document.getElementById('vehicleYear')?.value || '',
-        plateNumber: document.getElementById('plateNumber')?.value || '',
         type: document.getElementById('vehicleType')?.value || '',
         status: 'active'
     };
+    
+    // Validate required fields
+    if (!formData.plateNumber || !formData.make || !formData.model) {
+        showNotification('Please fill in all required fields', 'warning');
+        return;
+    }
     
     console.log('🚗 Vehicle form submitted:', formData);
     showNotification('Vehicle added successfully!', 'success');
@@ -188,16 +195,26 @@ function handleVehicleSubmit() {
     
     // Add to table
     addVehicleToTable(formData);
+    
+    // Update dashboard stats
+    updateDashboardStats();
 }
 
 function handleDriverSubmit() {
     const formData = {
+        id: Date.now(), // Add unique ID
         name: document.getElementById('driverName')?.value || '',
         license: document.getElementById('driverLicense')?.value || '',
         phone: document.getElementById('driverPhone')?.value || '',
         email: document.getElementById('driverEmail')?.value || '',
         status: 'active'
     };
+    
+    // Validate required fields
+    if (!formData.name || !formData.license) {
+        showNotification('Please fill in all required fields', 'warning');
+        return;
+    }
     
     console.log('👤 Driver form submitted:', formData);
     showNotification('Driver added successfully!', 'success');
@@ -207,10 +224,14 @@ function handleDriverSubmit() {
     
     // Add to table
     addDriverToTable(formData);
+    
+    // Update dashboard stats
+    updateDashboardStats();
 }
 
 function handleTripSubmit() {
     const formData = {
+        id: Date.now(), // Add unique ID
         vehicle: document.getElementById('tripVehicle')?.value || '',
         driver: document.getElementById('tripDriver')?.value || '',
         date: document.getElementById('tripDate')?.value || '',
@@ -218,6 +239,12 @@ function handleTripSubmit() {
         destination: document.getElementById('tripDestination')?.value || '',
         status: 'scheduled'
     };
+    
+    // Validate required fields
+    if (!formData.vehicle || !formData.driver || !formData.destination) {
+        showNotification('Please fill in all required fields', 'warning');
+        return;
+    }
     
     console.log('🛣️ Trip form submitted:', formData);
     showNotification('Trip scheduled successfully!', 'success');
@@ -227,10 +254,14 @@ function handleTripSubmit() {
     
     // Add to table
     addTripToTable(formData);
+    
+    // Update dashboard stats
+    updateDashboardStats();
 }
 
 function handleMaintenanceSubmit() {
     const formData = {
+        id: Date.now(), // Add unique ID
         vehicle: document.getElementById('maintenanceVehicle')?.value || '',
         serviceDate: document.getElementById('serviceDate')?.value || '',
         serviceType: document.getElementById('serviceType')?.value || '',
@@ -238,6 +269,12 @@ function handleMaintenanceSubmit() {
         nextServiceDate: document.getElementById('nextServiceDate')?.value || '',
         status: 'completed'
     };
+    
+    // Validate required fields
+    if (!formData.vehicle || !formData.serviceType || !formData.cost) {
+        showNotification('Please fill in all required fields', 'warning');
+        return;
+    }
     
     console.log('🔧 Maintenance form submitted:', formData);
     showNotification('Maintenance record added successfully!', 'success');
@@ -247,6 +284,9 @@ function handleMaintenanceSubmit() {
     
     // Add to table
     addMaintenanceToTable(formData);
+    
+    // Update dashboard stats
+    updateDashboardStats();
 }
 
 // Add data to tables
@@ -338,23 +378,31 @@ function addMaintenanceToTable(data) {
 function loadSampleData() {
     console.log('📊 Loading sample data...');
     
-    // Update dashboard stats
-    updateDashboardStats();
-    
     // Load sample data into tables
     loadSampleVehicles();
     loadSampleDrivers();
     loadSampleTrips();
     loadSampleMaintenance();
+    
+    // Update dashboard stats after loading data
+    setTimeout(() => updateDashboardStats(), 100);
 }
 
 function updateDashboardStats() {
+    // Count actual data from tables
+    const vehicleCount = document.querySelectorAll('#vehiclesTable tbody tr').length;
+    const driverCount = document.querySelectorAll('#driversTable tbody tr').length;
+    const tripCount = document.querySelectorAll('#tripsTable tbody tr').length;
+    const maintenanceCount = document.querySelectorAll('#maintenanceTable tbody tr').length;
+    
     const stats = {
-        totalVehicles: 15,
-        activeDrivers: 12,
-        ongoingTrips: 3,
-        underMaintenance: 2
+        totalVehicles: vehicleCount || 15,
+        activeDrivers: driverCount || 12,
+        ongoingTrips: tripCount || 3,
+        underMaintenance: maintenanceCount || 2
     };
+    
+    console.log('📊 Updating dashboard stats:', stats);
     
     // Update stat cards with animation
     animateValue('totalVehicles', 0, stats.totalVehicles, 1000);
