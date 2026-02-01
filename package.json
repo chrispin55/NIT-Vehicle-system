@@ -6,11 +6,13 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "demo": "node server-demo.js",
     "build": "echo 'Build completed'",
     "deploy": "gcloud app deploy",
     "deploy:gcp": "gcloud app deploy",
     "deploy:run": "gcloud builds submit --config cloudbuild-run.yaml",
     "deploy:cloud-run": "./deploy-cloud-run.sh",
+    "deploy:demo": "gcloud builds submit --config cloudbuild-demo.yaml",
     "auto-push": "node auto-git-push.js",
     "start-auto-push": "node start-auto-push.js",
     "test": "jest",

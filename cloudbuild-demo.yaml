@@ -1,0 +1,32 @@
+# Cloud Build configuration for Demo deployment (no database)
+steps:
+  # Build the Docker image using demo Dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-f', 'Dockerfile.demo', '-t', 'gcr.io/$PROJECT_ID/nit-itvms-demo:$COMMIT_SHA', '.']
+  
+  # Push the Docker image to Container Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/nit-itvms-demo:$COMMIT_SHA']
+  
+  # Deploy to Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: 'gcloud'
+    args:
+      - 'run'
+      - 'deploy'
+      - 'nit-itvms-demo'
+      - '--image=gcr.io/$PROJECT_ID/nit-itvms-demo:$COMMIT_SHA'
+      - '--region=us-central1'
+      - '--platform=managed'
+      - '--allow-unauthenticated'
+      - '--port=8080'
+      - '--memory=512Mi'
+      - '--cpu=1'
+      - '--min-instances=1'
+      - '--max-instances=5'
+      - '--set-env-vars'
+      - 'NODE_ENV=production'
+
+# Store the image in Container Registry
+images:
+  - 'gcr.io/$PROJECT_ID/nit-itvms-demo:$COMMIT_SHA'
