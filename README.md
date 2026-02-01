@@ -27,19 +27,21 @@
 - Traditional setup with local MySQL database
 - Perfect for development and testing
 
-### � Railway Cloud Deployment ⭐ **Recommended**
-- **Managed MySQL Database** - No database maintenance required
+### ☁️ Google Cloud Platform Deployment ⭐ **Recommended**
+- **App Engine** - Scalable hosting platform
+- **Cloud SQL** - Managed MySQL database
 - **Automatic SSL Certificates** - Secure HTTPS by default
-- **Zero-Configuration Deployment** - Deploy from GitHub in minutes
+- **Zero-Configuration Deployment** - Deploy with automated scripts
 - **Built-in Monitoring** - Health checks and logging
 - **Scalable Infrastructure** - Automatic scaling based on demand
+- **Cost-Effective** - Free tier available for moderate usage
 
 ## �🛠️ Technology Stack
 
 ### Backend
 - **Node.js** - Runtime environment
 - **Express.js** - Web framework
-- **MySQL** - Database (Local or Railway Managed)
+- **MySQL** - Database (Local or Google Cloud SQL)
 - **JWT** - Authentication tokens
 - **bcryptjs** - Password hashing
 - **Helmet** - Security middleware
@@ -285,5 +287,6 @@ Deploy to Railway for:
 ---
 
 **© 2023 NIT University Dar es Salaam. All rights reserved.**
-#   N I T - V e h i c l e - s y s t e m  
+#   N I T - V e h i c l e - s y s t e m 
+ 
  

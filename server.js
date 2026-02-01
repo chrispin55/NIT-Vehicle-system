@@ -6,33 +6,81 @@ const morgan = require('morgan');
 const path = require('path');
 require('dotenv').config();
 
+// Import Google Cloud database config
+const { testConnection, initializeDatabase } = require('./backend/config/database');
+
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 
 // Security middleware
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "https://cdn.jsdelivr.net", "https://cdnjs.cloudflare.com"],
+      imgSrc: ["'self'", "data:", "https:"],
+      connectSrc: ["'self'"],
+      fontSrc: ["'self'", "https://cdnjs.cloudflare.com"],
+      objectSrc: ["'none'"],
+      mediaSrc: ["'self'"],
+      frameSrc: ["'none'"],
+    },
+  },
+}));
+
+// CORS configuration for Google Cloud
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:3000',
-  credentials: true
+  origin: process.env.FRONTEND_URL || true,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 // Rate limiting
 const limiter = rateLimit({
-  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
-  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100, // limit each IP to 100 requests per windowMs
-  message: 'Too many requests from this IP, please try again later.'
+  windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000,
+  max: parseInt(process.env.RATE_LIMIT_MAX_REQUESTS) || 100,
+  message: { success: false, message: 'Too many requests from this IP, please try again later.' },
+  standardHeaders: true,
+  legacyHeaders: false,
 });
 app.use('/api/', limiter);
 
 // Logging
-app.use(morgan('combined'));
+if (process.env.NODE_ENV === 'production') {
+  app.use(morgan('combined'));
+} else {
+  app.use(morgan('dev'));
+}
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
+// Health check endpoint for Google Cloud
+app.get('/api/health', async (req, res) => {
+  try {
+    const dbConnected = await testConnection();
+    res.status(200).json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      database: dbConnected ? 'connected' : 'disconnected',
+      environment: process.env.NODE_ENV || 'development',
+      platform: 'Google Cloud Platform'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      error: error.message,
+      environment: process.env.NODE_ENV || 'development'
+    });
+  }
+});
+
 // Serve static files from frontend
-app.use(express.static(path.join(__dirname)));
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 // API Routes
 app.use('/api/vehicles', require('./backend/routes/vehicles'));
@@ -42,18 +90,24 @@ app.use('/api/maintenance', require('./backend/routes/maintenance'));
 app.use('/api/reports', require('./backend/routes/reports'));
 app.use('/api/auth', require('./backend/routes/auth'));
 
-// Serve the main HTML file for all other routes
+// Serve the main HTML file for all other routes (SPA support)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'deepseek_html_20260131_ff2154.html'));
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).json({
+  console.error('Error:', err);
+  
+  // Don't leak error details in production
+  const message = process.env.NODE_ENV === 'production' 
+    ? 'Internal server error' 
+    : err.message;
+  
+  res.status(err.status || 500).json({
     success: false,
-    message: 'Something went wrong!',
-    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+    message: message,
+    ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
   });
 });
 
@@ -65,11 +119,64 @@ app.use('*', (req, res) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`🚀 NIT ITVMS Server running on port ${PORT}`);
-  console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`📊 Dashboard: http://localhost:${PORT}`);
+// Graceful shutdown
+process.on('SIGTERM', () => {
+  console.log('SIGTERM received, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+    process.exit(0);
+  });
 });
+
+process.on('SIGINT', () => {
+  console.log('SIGINT received, shutting down gracefully');
+  server.close(() => {
+    console.log('Process terminated');
+    process.exit(0);
+  });
+});
+
+// Start server with database connection test
+const startServer = async () => {
+  try {
+    console.log('🚀 Starting NIT ITVMS Server on Google Cloud...');
+    
+    // Test database connection
+    const dbConnected = await testConnection();
+    if (dbConnected) {
+      console.log('✅ Google Cloud SQL connection established');
+      
+      // Initialize database schema
+      try {
+        await initializeDatabase();
+        console.log('✅ Database schema initialized');
+      } catch (initError) {
+        console.log('⚠️  Database initialization failed, but server will continue:', initError.message);
+      }
+    } else {
+      console.log('⚠️  Database connection failed, but server will start anyway');
+    }
+    
+    const server = app.listen(PORT, () => {
+      console.log(`🚀 NIT ITVMS Server running on port ${PORT}`);
+      console.log(`🌐 Environment: ${process.env.NODE_ENV || 'development'}`);
+      console.log(`📊 Platform: Google Cloud Platform`);
+      console.log(`🔗 Health Check: http://localhost:${PORT}/api/health`);
+      
+      if (process.env.GCP_PROJECT) {
+        console.log(`🌍 GCP Project: ${process.env.GCP_PROJECT}`);
+        console.log(`🌍 GCP Region: ${process.env.GCP_REGION || 'not set'}`);
+      }
+    });
+    
+    return server;
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+// Start the server
+startServer();
 
 module.exports = app;
