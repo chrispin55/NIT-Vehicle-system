@@ -15,7 +15,8 @@
     "watch": "node watcher.js",
     "setup": "node setup-env.js",
     "setup-db": "mysql -u root -p nit_itvms < database/schema.sql",
-    "init-db": "node database-init.js"
+    "init-db": "node database-init.js",
+    "fix-db": "node fix-database.js"
   },
   "keywords": ["transport", "vehicle", "management", "university", "nit"],
   "author": "NIT University Dar es Salaam",
