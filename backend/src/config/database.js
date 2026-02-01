@@ -5,22 +5,23 @@ require('dotenv').config();
 const getDatabaseConfig = () => {
   // Debug: Log all environment variables
   console.log('🔍 Environment Variables Debug:');
+  console.log('RAILWAY_ENVIRONMENT:', process.env.RAILWAY_ENVIRONMENT);
+  console.log('NODE_ENV:', process.env.NODE_ENV);
   console.log('RAILWAY_DB_URL:', process.env.RAILWAY_DB_URL ? 'SET' : 'NOT SET');
   console.log('DB_HOST:', process.env.DB_HOST);
   console.log('DB_PORT:', process.env.DB_PORT);
   console.log('DB_NAME:', process.env.DB_NAME);
   console.log('DB_USER:', process.env.DB_USER);
-  console.log('NODE_ENV:', process.env.NODE_ENV);
   
-  // Always use Railway.app configuration when RAILWAY_DB_URL is available
-  if (process.env.RAILWAY_DB_URL && process.env.RAILWAY_DB_URL !== 'mysql://user:password@host:port/database') {
-    console.log('🚆 Using Railway.app database URL');
+  // Always use Railway.app configuration when in Railway.app environment
+  if (process.env.RAILWAY_ENVIRONMENT === 'production' || process.env.NODE_ENV === 'production') {
+    console.log('🚆 Railway.app environment detected');
     return {
-      host: process.env.DB_HOST || 'shuttle.proxy.rlwy.net',
-      port: parseInt(process.env.DB_PORT) || 35740,
-      database: process.env.DB_NAME || 'railway',
-      username: process.env.DB_USER || 'root',
-      password: process.env.DB_PASSWORD || 'FYeDxMGArZDXDqBTYUivUysJiAbGqKtw',
+      host: process.env.RAILWAY_PRIVATE_DOMAIN || process.env.DB_HOST || 'shuttle.proxy.rlwy.net',
+      port: parseInt(process.env.RAILWAY_TCP_PORT) || parseInt(process.env.DB_PORT) || 35740,
+      database: process.env.RAILWAY_DB_NAME || process.env.DB_NAME || 'railway',
+      username: process.env.RAILWAY_DB_USERNAME || process.env.DB_USER || 'root',
+      password: process.env.RAILWAY_DB_PASSWORD || process.env.DB_PASSWORD || 'FYeDxMGArZDXDqBTYUivUysJiAbGqKtw',
       dialect: 'mysql',
       logging: false,
       pool: {
