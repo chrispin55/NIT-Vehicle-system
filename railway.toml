@@ -21,17 +21,9 @@ FRONTEND_URL = "${PUBLIC_URL}"
 RATE_LIMIT_WINDOW_MS = "900000"
 RATE_LIMIT_MAX_REQUESTS = "100"
 
-# Database connection variables
-DB_HOST = "${{ services.nit-itvms-db.RAILWAY_PRIVATE_DOMAIN }}"
-DB_PORT = "${{ services.nit-itvms-db.RAILWAY_TCP_PORT }}"
-DB_NAME = "${{ services.nit-itvms-db.MYSQL_DATABASE }}"
-DB_USER = "${{ services.nit-itvms-db.MYSQL_USER }}"
-DB_PASSWORD = "${{ services.nit-itvms-db.MYSQL_PASSWORD }}"
-
 [[services]]
 name = "nit-itvms-db"
-source = "image"
-image = "mysql:8.0"
+source = "railway/mysql:8.0"
 
 [services.env]
 MYSQL_DATABASE = "nit_itvms"

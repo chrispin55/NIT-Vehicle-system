@@ -8,7 +8,7 @@ require('dotenv').config();
 
 // Use Railway-specific database config
 const { testConnection } = require('./backend/config/database-railway');
-const { initializeDatabase } = require('./scripts/init-database');
+const { setupDatabase } = require('./scripts/setup-railway-db');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -141,18 +141,18 @@ const startServer = async () => {
   try {
     console.log('🚀 Starting NIT ITVMS Server...');
     
+    // Setup database configuration
+    try {
+      await setupDatabase();
+      console.log('✅ Database configuration validated');
+    } catch (setupError) {
+      console.log('⚠️  Database setup validation failed:', setupError.message);
+    }
+    
     // Test database connection
     const dbConnected = await testConnection();
     if (dbConnected) {
       console.log('✅ Database connection established');
-      
-      // Initialize database schema
-      try {
-        await initializeDatabase();
-        console.log('✅ Database schema initialized');
-      } catch (initError) {
-        console.log('⚠️  Database initialization failed, but server will continue:', initError.message);
-      }
     } else {
       console.log('⚠️  Database connection failed, but server will start anyway');
     }
@@ -166,6 +166,10 @@ const startServer = async () => {
       if (process.env.RAILWAY_ENVIRONMENT) {
         console.log(`🚂 Railway Environment: ${process.env.RAILWAY_ENVIRONMENT}`);
         console.log(`🌍 Public URL: ${process.env.PUBLIC_URL}`);
+        console.log(`🔗 Database Host: ${process.env.RAILWAY_PRIVATE_DOMAIN || 'not set'}`);
+        console.log(`🔢 Database Port: ${process.env.RAILWAY_TCP_PORT || 'not set'}`);
+        console.log(`👤 Database User: ${process.env.MYSQLUSER || 'not set'}`);
+        console.log(`💾 Database Name: ${process.env.MYSQLDATABASE || 'not set'}`);
       }
     });
     
