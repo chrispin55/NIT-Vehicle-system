@@ -9,11 +9,11 @@
     ]
   },
   "deploy": {
-    "startCommand": "node railway-persistent-start.js",
+    "startCommand": "node railway-simple-start.js",
     "healthcheckPath": "/health",
-    "healthcheckTimeout": 100,
+    "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
-    "restartPolicyMaxRetries": 10
+    "restartPolicyMaxRetries": 3
   },
   "services": {
     "api": {
