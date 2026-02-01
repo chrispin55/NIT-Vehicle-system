@@ -1,0 +1,55 @@
+# Dependencies
+node_modules
+npm-debug.log
+
+# Git
+.git
+.gitignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Logs
+logs
+*.log
+
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# Temporary files
+tmp
+temp
+
+# Documentation (optional - remove if you want docs in container)
+*.md
+docs/
+
+# Scripts (optional - remove if needed)
+scripts/
+
+# Railway files (not needed for Cloud Run)
+railway.toml
+server-railway.js
+database-railway.js

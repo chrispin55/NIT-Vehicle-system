@@ -9,6 +9,8 @@
     "build": "echo 'Build completed'",
     "deploy": "gcloud app deploy",
     "deploy:gcp": "gcloud app deploy",
+    "deploy:run": "gcloud builds submit --config cloudbuild-run.yaml",
+    "deploy:cloud-run": "./deploy-cloud-run.sh",
     "auto-push": "node auto-git-push.js",
     "start-auto-push": "node start-auto-push.js",
     "test": "jest",
@@ -23,7 +25,9 @@
     "google-cloud",
     "gcp",
     "app-engine",
-    "cloud-sql"
+    "cloud-sql",
+    "cloud-run",
+    "docker"
   ],
   "author": "NIT University Dar es Salaam",
   "license": "MIT",
