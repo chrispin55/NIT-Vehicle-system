@@ -2,7 +2,8 @@
 class ApiService {
   constructor() {
     this.baseURL = '/api';
-    this.token = localStorage.getItem('authToken');
+    this.token = null;
+    this.user = null;
   }
 
   // Generic request method
@@ -41,8 +42,7 @@ class ApiService {
     
     if (data.success) {
       this.token = data.data.token;
-      localStorage.setItem('authToken', this.token);
-      localStorage.setItem('user', JSON.stringify(data.data.user));
+      this.user = data.data.user;
     }
     
     return data;
@@ -50,12 +50,21 @@ class ApiService {
 
   async logout() {
     this.token = null;
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('user');
+    this.user = null;
   }
 
   async getProfile() {
     return await this.request('/auth/profile');
+  }
+
+  // Get current user info
+  getCurrentUser() {
+    return this.user;
+  }
+
+  // Check if user is authenticated
+  isAuthenticated() {
+    return !!this.token;
   }
 
   // Vehicle methods
