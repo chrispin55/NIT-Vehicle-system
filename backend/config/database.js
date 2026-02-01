@@ -18,9 +18,10 @@ const dbConfig = {
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  acquireTimeout: 60000,
-  timeout: 60000,
-  reconnect: true,
+  // Remove invalid MySQL2 options
+  // acquireTimeout: 60000,  // Not valid in MySQL2
+  // timeout: 60000,         // Not valid in MySQL2  
+  // reconnect: true,       // Not valid in MySQL2
   // Additional Cloud SQL specific settings
   charset: 'utf8mb4',
   timezone: '+00:00'
