@@ -9,7 +9,7 @@
     ]
   },
   "deploy": {
-    "startCommand": "node railway-start-with-fix.js",
+    "startCommand": "node railway-persistent-start.js",
     "healthcheckPath": "/health",
     "healthcheckTimeout": 100,
     "restartPolicyType": "ON_FAILURE",
