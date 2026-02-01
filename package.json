@@ -14,7 +14,8 @@
     "save-and-push": "git add . && git commit -m \"Manual update\" && git push origin main",
     "watch": "node watcher.js",
     "setup": "node setup-env.js",
-    "setup-db": "mysql -u root -p nit_itvms < database/schema.sql"
+    "setup-db": "mysql -u root -p nit_itvms < database/schema.sql",
+    "init-db": "node database-init.js"
   },
   "keywords": ["transport", "vehicle", "management", "university", "nit"],
   "author": "NIT University Dar es Salaam",

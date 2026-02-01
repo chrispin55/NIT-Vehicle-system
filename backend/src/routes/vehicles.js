@@ -40,18 +40,59 @@ router.post('/', [
   body('status').optional().isIn(['Active', 'Under Maintenance', 'Inactive']).withMessage('Invalid status')
 ], async (req, res) => {
   try {
+    console.log('🚗 Vehicle creation request received:', req.body);
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
+      console.log('❌ Validation errors:', errors.array());
       return res.status(400).json({ errors: errors.array() });
     }
 
-    const vehicle = await Vehicle.create(req.body);
-    res.status(201).json(vehicle);
-  } catch (error) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
+    console.log('✅ Validation passed, creating vehicle...');
+    
+    // Check if plate number already exists
+    const existingVehicle = await Vehicle.findOne({ 
+      where: { plate_number: req.body.plate_number } 
+    });
+    
+    if (existingVehicle) {
+      console.log('❌ Plate number already exists:', req.body.plate_number);
       return res.status(400).json({ error: 'Plate number already exists' });
     }
-    res.status(500).json({ error: error.message });
+
+    console.log('📝 Attempting to create vehicle with data:', req.body);
+    
+    const vehicle = await Vehicle.create(req.body);
+    
+    console.log('✅ Vehicle created successfully:', vehicle);
+    res.status(201).json(vehicle);
+    
+  } catch (error) {
+    console.error('❌ Error creating vehicle:', error);
+    console.error('❌ Error details:', {
+      message: error.message,
+      sql: error.sql,
+      fields: error.fields
+    });
+    
+    // Handle specific database errors
+    if (error.message.includes("Field 'id' doesn't have a default value")) {
+      res.status(500).json({ 
+        error: 'Database configuration error: ID field not properly configured',
+        details: 'The vehicles table may not have AUTO_INCREMENT set for the id field'
+      });
+    } else if (error.message.includes('ER_DUP_ENTRY')) {
+      res.status(400).json({ 
+        error: 'Duplicate entry: Plate number already exists',
+        details: error.message
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'Failed to create vehicle',
+        message: error.message,
+        details: error.sql || 'No SQL available'
+      });
+    }
   }
 });
 

@@ -40,6 +40,50 @@ app.get('/health', (req, res) => {
   });
 });
 
+// Database check endpoint
+app.get('/api/db-check', async (req, res) => {
+  try {
+    const { testConnection } = require('./config/database');
+    
+    // Test database connection
+    await testConnection();
+    
+    // Check table structure
+    const { sequelize } = require('./config/database');
+    const [vehicleResults] = await sequelize.query("DESCRIBE vehicles");
+    const [driverResults] = await sequelize.query("DESCRIBE drivers");
+    
+    // Check table counts
+    const [vehicleCount] = await sequelize.query("SELECT COUNT(*) as count FROM vehicles");
+    const [driverCount] = await sequelize.query("SELECT COUNT(*) as count FROM drivers");
+    
+    res.json({
+      status: 'OK',
+      message: 'Database connection and tables verified',
+      tables: {
+        vehicles: {
+          structure: vehicleResults,
+          count: vehicleCount[0].count
+        },
+        drivers: {
+          structure: driverResults,
+          count: driverCount[0].count
+        }
+      },
+      timestamp: new Date().toISOString()
+    });
+    
+  } catch (error) {
+    console.error('Database check failed:', error);
+    res.status(500).json({
+      status: 'ERROR',
+      message: 'Database check failed',
+      error: error.message,
+      timestamp: new Date().toISOString()
+    });
+  }
+});
+
 // API info endpoint
 app.get('/api-info', (req, res) => {
   res.json({
