@@ -8,6 +8,7 @@ require('dotenv').config();
 
 // Use Railway-specific database config
 const { testConnection } = require('./backend/config/database-railway');
+const { initializeDatabase } = require('./scripts/init-database');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -59,14 +60,23 @@ app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // Health check endpoint for Railway
-app.get('/api/health', (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: 'NIT ITVMS is healthy',
-    timestamp: new Date().toISOString(),
-    environment: process.env.NODE_ENV || 'development',
-    version: '1.0.0'
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    const dbConnected = await testConnection();
+    res.status(200).json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      database: dbConnected ? 'connected' : 'disconnected',
+      environment: process.env.NODE_ENV || 'development'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'unhealthy',
+      timestamp: new Date().toISOString(),
+      error: error.message,
+      environment: process.env.NODE_ENV || 'development'
+    });
+  }
 });
 
 // Serve static files from frontend
@@ -82,7 +92,7 @@ app.use('/api/auth', require('./backend/routes/auth'));
 
 // Serve the main HTML file for all other routes (SPA support)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'deepseek_html_20260131_ff2154.html'));
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 // Error handling middleware
@@ -129,10 +139,22 @@ process.on('SIGINT', () => {
 // Start server with database connection test
 const startServer = async () => {
   try {
+    console.log('🚀 Starting NIT ITVMS Server...');
+    
     // Test database connection
     const dbConnected = await testConnection();
-    if (!dbConnected) {
-      console.error('⚠️  Database connection failed, but server will start anyway');
+    if (dbConnected) {
+      console.log('✅ Database connection established');
+      
+      // Initialize database schema
+      try {
+        await initializeDatabase();
+        console.log('✅ Database schema initialized');
+      } catch (initError) {
+        console.log('⚠️  Database initialization failed, but server will continue:', initError.message);
+      }
+    } else {
+      console.log('⚠️  Database connection failed, but server will start anyway');
     }
     
     const server = app.listen(PORT, () => {

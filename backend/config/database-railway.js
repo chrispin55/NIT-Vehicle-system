@@ -3,11 +3,11 @@ require('dotenv').config();
 
 // Railway MySQL configuration
 const dbConfig = {
-  host: process.env.RAILWAY_PRIVATE_DOMAIN || process.env.DB_HOST || 'localhost',
-  port: process.env.RAILWAY_TCP_PORT || process.env.DB_PORT || 3306,
-  user: process.env.MYSQLUSER || process.env.DB_USER || 'root',
-  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || '',
-  database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'nit_itvms',
+  host: process.env.DB_HOST || process.env.RAILWAY_PRIVATE_DOMAIN || 'localhost',
+  port: process.env.DB_PORT || process.env.RAILWAY_TCP_PORT || 3306,
+  user: process.env.DB_USER || process.env.MYSQLUSER || process.env.MYSQL_USER || 'root',
+  password: process.env.DB_PASSWORD || process.env.MYSQLPASSWORD || process.env.MYSQL_PASSWORD || '',
+  database: process.env.DB_NAME || process.env.MYSQLDATABASE || process.env.MYSQL_DATABASE || 'nit_itvms',
   ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
   waitForConnections: true,
   connectionLimit: 10,
