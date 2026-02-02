@@ -7,7 +7,7 @@ const path = require('path');
 require('dotenv').config();
 
 // Import database configuration
-const { testConnection, initializeDatabase } = require('./backend/config/database-render');
+const { testConnection, initializeDatabase } = require('./backend/config/database');
 
 const app = express();
 const PORT = process.env.PORT || 10000; // Render uses port 10000
