@@ -102,11 +102,17 @@ async function startServer() {
     if (dbConnected) {
       console.log('✅ Database connected successfully');
       
-      // Initialize database schema
-      await initializeDatabase();
-      console.log('✅ Database initialized successfully');
-    } else {
-      console.log('⚠️ Database connection failed, but server will start anyway');
+      // Initialize database
+      console.log('🔄 Starting database initialization...');
+      initializeDatabase().then(success => {
+        if (success) {
+          console.log('✅ Database initialization completed successfully');
+        } else {
+          console.log('⚠️ Database initialization failed, but server will continue');
+        }
+      }).catch(error => {
+        console.error('❌ Database initialization error:', error.message);
+      });
     }
     
     // Start server
