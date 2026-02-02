@@ -41,5 +41,5 @@ services:
     name: nit-itvms-db
     env: postgres
     plan: free
-    databaseName: nit_itvms
-    user: nit_user
+    databaseName: nit_vehicle_database
+    user: nit_vehicle_database_user
