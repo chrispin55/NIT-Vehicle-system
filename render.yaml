@@ -8,8 +8,8 @@ services:
     buildCommand: npm install
     startCommand: npm start
     healthCheckPath: /api/health
-    # Static files are served by Express, not as static build
-    # No staticPublishPath needed since we serve from frontend/ directory
+    # Explicitly set staticPublishPath to prevent build directory error
+    staticPublishPath: frontend
     envVars:
       - key: NODE_ENV
         value: production
