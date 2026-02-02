@@ -1,0 +1,45 @@
+# Render.com Deployment Configuration
+services:
+  # Web Service
+  - type: web
+    name: nit-itvms
+    env: node
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: JWT_SECRET
+        generateValue: true
+      - key: DB_HOST
+        fromDatabase:
+          name: nit-itvms-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: nit-itvms-db
+          property: port
+      - key: DB_USER
+        fromDatabase:
+          name: nit-itvms-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: nit-itvms-db
+          property: password
+      - key: DB_NAME
+        fromDatabase:
+          name: nit-itvms-db
+          property: database
+
+  # PostgreSQL Database
+  - type: pserv
+    name: nit-itvms-db
+    env: postgres
+    plan: free
+    databaseName: nit_itvms
+    user: nit_user
